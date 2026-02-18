@@ -25,25 +25,26 @@ public class Coupon extends BaseTimeEntity{
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "coupon_type")
     @Enumerated(EnumType.STRING)
     private CouponType couponType;
 
+    @Column(name = "total_quantity")
     private Integer totalQuantity;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "issued_quantity")
     private int issuedQuantity;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "discount_amount")
     private int discountAmount;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "min_available_amount")
     private int minAvailableQuantity;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "date_issue_start")
     private LocalDateTime dateIssueStart;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "date_issue_end")
     private LocalDateTime dateIssueEnd;
 
     // 수량 검증

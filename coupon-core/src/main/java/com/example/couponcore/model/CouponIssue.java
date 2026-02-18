@@ -10,7 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "coupon_issue")
+@Table(name = "coupon_issues")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,15 +21,16 @@ public class CouponIssue extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "coupon_id")
     private Long couponId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "user_id")
     private Long userId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "date_issued")
     @CreatedDate
     private LocalDateTime dateIssued;
 
+    @Column(name = "date_used")
     private LocalDateTime dateUsed;
 }

@@ -1,5 +1,6 @@
 package com.example.couponcore.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -15,8 +16,10 @@ import java.time.LocalDateTime;
 public class BaseTimeEntity {
 
     @CreatedDate
+    @Column(name = "date_created")
     private LocalDateTime dateCreated;
 
     @LastModifiedDate
+    @Column(name = "date_updated")
     private LocalDateTime dateUpdated;
 }
