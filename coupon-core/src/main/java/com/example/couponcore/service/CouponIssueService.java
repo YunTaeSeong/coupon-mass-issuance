@@ -21,6 +21,17 @@ public class CouponIssueService {
     private final CouponIssueJpaRepository couponIssueJpaRepository;
     private final CouponIssueRepository couponIssueRepository;
 
+    /**
+     * lock 획득
+     *
+     * 트랜잭션 시작
+     * Coupon coupon = findCoupon(couponId);
+     * coupon.issue();
+     * saveCouponIssue(couponId, userId);
+     * 트랜잭션 커밋
+     *
+     * lock 반납
+     */
     @Transactional
     public void issue(long couponId, long userId) {
         Coupon coupon = findCoupon(couponId);
