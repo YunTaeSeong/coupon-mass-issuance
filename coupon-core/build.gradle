@@ -9,6 +9,9 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Source: https://mvnrepository.com/artifact/org.redisson/redisson-spring-boot-starter
+    implementation 'org.redisson:redisson-spring-boot-starter:3.52.0'
 }
 
 test {
