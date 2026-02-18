@@ -13,9 +13,13 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class DistributeLockExecutor {
 
+    // Redis에 연결해서 락 객체(RLock)를 만들고, 락 획득/해제를 수행
     private final RedissonClient redissonClient;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+    // waitMilliSecond : 락을 얻기 위한 최대 얼마나 기다릴지 대기시간
+    // leaseMilliSecond : 락을 얻은 후 자동으로 락이 풀리기까지의 시간(TTL)
+    // Runnable : 락을 얻은 후 실제 실행할 로직
     public void execute(String lockName, long waitMilliSecond, long leaseMilliSecond, Runnable logic) {
         RLock lock = redissonClient.getLock(lockName);
         try {
