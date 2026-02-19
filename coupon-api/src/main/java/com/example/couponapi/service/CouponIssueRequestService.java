@@ -18,13 +18,18 @@ public class CouponIssueRequestService {
     private final Logger log = LoggerFactory.getLogger(CouponIssueRequestService.class);
 
     public void issueRequestV1(CouponIssueRequestDto requestDto) {
+////        synchronized ()
 //        synchronized (this) {
 //            couponIssueService.issue(requestDto.couponId(), requestDto.userId());
 //        }
 
-        distributeLockExecutor.execute("lock_" + requestDto.couponId(), 10000, 10000, () -> {
-            couponIssueService.issue(requestDto.couponId(), requestDto.userId());
-        });
+//        // redis lock
+//        distributeLockExecutor.execute("lock_" + requestDto.couponId(), 10000, 10000, () -> {
+//            couponIssueService.issue(requestDto.couponId(), requestDto.userId());
+//        });
+
+        // mysql lock
+        couponIssueService.issue(requestDto.couponId(), requestDto.userId());
 
         log.info("쿠폰 발급 완료. couponId: %s, userId: %s".formatted(requestDto.couponId(), requestDto.userId()));
     }
