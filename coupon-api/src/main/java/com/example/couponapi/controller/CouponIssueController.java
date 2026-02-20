@@ -26,7 +26,7 @@ public class CouponIssueController {
     public CouponIssueResponseDto asyncIssueV1(
             @RequestBody CouponIssueRequestDto body
     ) {
-        couponIssueRequestService.issueRequestV2(body);
+        couponIssueRequestService.asyncIssueRequestV1(body);
         return new CouponIssueResponseDto(true, null);
     }
 }
