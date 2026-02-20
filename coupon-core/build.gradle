@@ -12,6 +12,9 @@ dependencies {
 
     // Source: https://mvnrepository.com/artifact/org.redisson/redisson-spring-boot-starter
     implementation 'org.redisson:redisson-spring-boot-starter:3.52.0'
+
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
 }
 
 test {

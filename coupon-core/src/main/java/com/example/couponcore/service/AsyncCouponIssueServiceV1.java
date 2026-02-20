@@ -6,10 +6,10 @@ import com.example.couponcore.exception.ErrorCode;
 import com.example.couponcore.model.Coupon;
 import com.example.couponcore.repository.redis.dto.CouponIssueRequest;
 import com.example.couponcore.repository.redis.RedisRepository;
+import com.example.couponcore.repository.redis.dto.CouponRedisEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import static com.example.couponcore.util.CouponRedisUtils.getIssueRequestKey;
@@ -24,27 +24,40 @@ public class AsyncCouponIssueServiceV1 {
     private final CouponIssueService couponIssueService;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final DistributeLockExecutor distributeLockExecutor;
-    private final RedisTemplate<Object, Object> redisTemplate;
+    private final CouponCacheService couponCacheService;
+
+//    public void issue(long couponId, long userId) {
+//        Coupon coupon = couponIssueService.findCoupon(couponId);
+//
+//        // 날짜 검증
+//        if(!coupon.availableIssueDate()) {
+//            throw new CouponIssueException(ErrorCode.INVALID_COUPON_ISSUE_DATE, "발급 가능한 일자가 아닙니다. couponId: %s, issueStart: %s, issueEnd: %s".formatted(couponId, coupon.getDateIssueStart(), coupon.getDateIssueEnd()));
+//        }
+//
+//        // 동시성 이슈 제어
+//        distributeLockExecutor.execute("lock_%s".formatted(couponId), 3000, 3000, () -> {
+//            // 수량 조회 검증
+//            if (!couponIssueRedisService.availableUserIssueQuantity(couponId, userId)) {
+//                throw new CouponIssueException(ErrorCode.DUPLICATED_COUPON_ISSUE, "이미 발급 요청이 처리 되었습니다. couponId: %s, userId: %s".formatted(couponId, userId));
+//            }
+//            // 중복 발급 여부
+//            if (!couponIssueRedisService.availableTotalIssueQuantity(coupon.getTotalQuantity(), couponId)) {
+//                throw new CouponIssueException(ErrorCode.INVALID_COUPON_ISSUE_QUANTITY, "발급 가능한 수량을 초과합니다. couponId: %s, userId: %s".formatted(couponId, userId));
+//            }
+//            // 발급 요청
+//            issueRequest(couponId, userId);
+//        });
+//    }
 
     public void issue(long couponId, long userId) {
-        Coupon coupon = couponIssueService.findCoupon(couponId);
+        CouponRedisEntity coupon = couponCacheService.getCouponCache(couponId);
 
         // 날짜 검증
-        if(!coupon.availableIssueDate()) {
-            throw new CouponIssueException(ErrorCode.INVALID_COUPON_ISSUE_DATE, "발급 가능한 일자가 아닙니다. couponId: %s, issueStart: %s, issueEnd: %s".formatted(couponId, coupon.getDateIssueStart(), coupon.getDateIssueEnd()));
-        }
+        coupon.checkIssuableCoupon();
 
         // 동시성 이슈 제어
         distributeLockExecutor.execute("lock_%s".formatted(couponId), 3000, 3000, () -> {
-            // 수량 조회 검증
-            if (!couponIssueRedisService.availableUserIssueQuantity(couponId, userId)) {
-                throw new CouponIssueException(ErrorCode.DUPLICATED_COUPON_ISSUE, "이미 발급 요청이 처리 되었습니다. couponId: %s, userId: %s".formatted(couponId, userId));
-            }
-            // 중복 발급 여부
-            if (!couponIssueRedisService.availableTotalIssueQuantity(coupon.getTotalQuantity(), couponId)) {
-                throw new CouponIssueException(ErrorCode.INVALID_COUPON_ISSUE_QUANTITY, "발급 가능한 수량을 초과합니다. couponId: %s, userId: %s".formatted(couponId, userId));
-            }
-            // 발급 요청
+            couponIssueRedisService.checkCouponIssueQuantity(coupon, userId);
             issueRequest(couponId, userId);
         });
     }
