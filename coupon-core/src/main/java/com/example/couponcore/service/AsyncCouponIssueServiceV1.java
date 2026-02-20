@@ -4,7 +4,7 @@ import com.example.couponcore.component.DistributeLockExecutor;
 import com.example.couponcore.exception.CouponIssueException;
 import com.example.couponcore.exception.ErrorCode;
 import com.example.couponcore.model.Coupon;
-import com.example.couponcore.repository.redis.CouponIssueRequest;
+import com.example.couponcore.repository.redis.dto.CouponIssueRequest;
 import com.example.couponcore.repository.redis.RedisRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
