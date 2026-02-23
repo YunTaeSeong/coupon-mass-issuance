@@ -28,7 +28,8 @@ public class AsyncCouponIssueServiceV2 {
     // -> redisScript 처리
 
     public void issue(long couponId, long userId) {
-        CouponRedisEntity coupon = couponCacheService.getCouponCache(couponId);
+//        CouponRedisEntity coupon = couponCacheService.getCouponCache(couponId);
+        CouponRedisEntity coupon = couponCacheService.getCouponLocalCache(couponId);
         // 날짜 검증
         coupon.checkIssuableCoupon();
         issueRequest(couponId, userId, coupon.totalQuantity());
